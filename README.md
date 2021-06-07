@@ -13,8 +13,12 @@ A DevOps guide for Azure API Management
   - parameters: can be overriden
   - variables: used during the execution
   - resources: the services to be deployed in Azure
+  - Outputs
+  - Functions
 
 ### Sample ARM template
+
+> **Note:** This is a sample ARM template to create a storage account. Here we can see how parameters, variables, resources and outputs are used.
 
 ```json
 {
@@ -43,29 +47,10 @@ A DevOps guide for Azure API Management
     "location": {
       "type": "string",
       "defaultValue": "[resourceGroup().location]"
-    },
-    "appServicePlanName": {
-      "type": "string",
-      "defaultValue": "exampleplan"
-    },
-    "webAppName": {
-      "type": "string",
-      "metadata": {
-        "description": "Base name of the resource such as web app name and app service plan "
-      },
-      "minLength": 2
-    },
-    "linuxFxVersion": {
-      "type": "string",
-      "defaultValue": "php|7.0",
-      "metadata": {
-        "description": "The Runtime stack of current web app"
-      }
     }
   },
   "variables": {
-    "uniqueStorageName": "[concat(parameters('storagePrefix'), uniqueString(resourceGroup().id))]",
-    "webAppPortalName": "[concat(parameters('webAppName'), uniqueString(resourceGroup().id))]"
+    "uniqueStorageName": "[concat(parameters('storagePrefix'), uniqueString(resourceGroup().id))]"
   },
   "resources": [
     {
@@ -80,55 +65,16 @@ A DevOps guide for Azure API Management
       "properties": {
         "supportsHttpsTrafficOnly": true
       }
-    },
-    {
-      "type": "Microsoft.Web/serverfarms",
-      "apiVersion": "2016-09-01",
-      "name": "[parameters('appServicePlanName')]",
-      "location": "[parameters('location')]",
-      "sku": {
-        "name": "B1",
-        "tier": "Basic",
-        "size": "B1",
-        "family": "B",
-        "capacity": 1
-      },
-      "kind": "linux",
-      "properties": {
-        "perSiteScaling": false,
-        "reserved": true,
-        "targetWorkerCount": 0,
-        "targetWorkerSizeId": 0
-      }
-    },
-    {
-      "type": "Microsoft.Web/sites",
-      "apiVersion": "2018-11-01",
-      "name": "[variables('webAppPortalName')]",
-      "location": "[parameters('location')]",
-      "dependsOn": [
-        "[resourceId('Microsoft.Web/serverfarms', parameters('appServicePlanName'))]"
-      ],
-      "kind": "app",
-      "properties": {
-        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('appServicePlanName'))]",
-        "siteConfig": {
-            "linuxFxVersion": "[parameters('linuxFxVersion')]"
-          }
-      }
-    }
-  ],
-  "outputs": {
-    "storageEndpoint": {
-      "type": "object",
-      "value": "[reference(variables('uniqueStorageName')).primaryEndpoints]"
     }
   }
 }
-}
 ```
+## APIM DevOps Toolkit
 
-## APIM Extraction Tool
+- Reference: https://github.com/Azure/azure-api-management-devops-resource-kit
+- Releases: https://github.com/Azure/azure-api-management-devops-resource-kit/releases
+
+### APIM Extraction Tool
 
 ## ARM Template YAML pipeline
 
