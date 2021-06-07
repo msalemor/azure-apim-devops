@@ -65,6 +65,7 @@ A DevOps guide for Azure API Management
       "properties": {
         "supportsHttpsTrafficOnly": true
       }
+    }]
 }
 ```
 ## APIM DevOps Toolkit
